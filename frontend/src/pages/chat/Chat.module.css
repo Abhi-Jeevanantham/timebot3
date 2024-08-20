@@ -235,7 +235,7 @@
   flex-grow: 0;
 }
 
-.citationPanel {
+/*.citationPanel {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -306,7 +306,7 @@
   order: 1;
   align-self: stretch;
   flex-grow: 0;
-}
+}*/
 
 .exectResultList {
   display: flex;
@@ -382,7 +382,7 @@ a {
     line-height: 36px;
   }
 
-  .citationPanel {
+  /*.citationPanel {
     max-width: 100%;
-  }
+  }*/
 }

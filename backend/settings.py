@@ -79,7 +79,7 @@ class _PromptflowSettings(BaseSettings):
     response_timeout: float = 30.0
     request_field_name: str = "query"
     response_field_name: str = "reply"
-    citations_field_name: str = "documents"
+    #citations_field_name: str = "documents"
 
 
 class _AzureOpenAIFunction(BaseModel):
@@ -118,7 +118,7 @@ class _AzureOpenAISettings(BaseSettings):
     logit_bias: Optional[dict] = None
     presence_penalty: Optional[confloat(ge=-2.0, le=2.0)] = 0.0
     frequency_penalty: Optional[confloat(ge=-2.0, le=2.0)] = 0.0
-    system_message: str = "You are an AI assistant that helps people find information."
+    system_message: str = "You are a professional AI assistant or chatbot that helps people find information about Time department inside NRC. Make use of the documents provided and answer questions in a professional manner."
     preview_api_version: str = MINIMUM_SUPPORTED_AZURE_OPENAI_PREVIEW_API_VERSION
     embedding_endpoint: Optional[str] = None
     embedding_key: Optional[str] = None
@@ -209,7 +209,7 @@ class _SearchCommonSettings(BaseSettings):
     include_contexts: Optional[List[str]] = ["citations", "intent"]
     vectorization_dimensions: Optional[int] = None
     role_information: str = Field(
-        default="You are an AI assistant that helps people find information.",
+        default="You are a professional AI assistant or chatbot that helps people find information about Time department inside NRC. Make use of the documents provided and answer questions in a professional manner. When you don't have an answer, admit that the information is not found. Do not provide information about keywords or words unerelated to those found in the retrieved documents.",
         validation_alias="AZURE_OPENAI_SYSTEM_MESSAGE"
     )
 

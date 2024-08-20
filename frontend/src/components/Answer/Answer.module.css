@@ -61,7 +61,7 @@
   flex-grow: 0;
 }
 
-.citationWrapper {
+/*.citationWrapper {
   margin-top: 8;
   display: flex;
   flex-flow: wrap column;
@@ -117,7 +117,7 @@
 .citation:hover {
   text-decoration: underline;
   cursor: pointer;
-}
+}*/
 
 .accordionIcon {
   display: inline-flex;
@@ -189,13 +189,13 @@ sup {
     flex-direction: column-reverse;
   }
 
-  .citationWrapper {
+  /*.citationWrapper {
     max-height: max-content;
   }
 
   .citationContainer {
     margin-left: 0;
-  }
+  }*/
 
   .answerDisclaimer {
     margin-bottom: 5px;

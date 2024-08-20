@@ -353,7 +353,7 @@ async def complete_chat_request(request_body, request_headers):
             response,
             history_metadata,
             app_settings.promptflow.response_field_name,
-            app_settings.promptflow.citations_field_name
+            #app_settings.promptflow.citations_field_name
         )
     else:
         response, apim_request_id = await send_chat_request(request_body, request_headers)

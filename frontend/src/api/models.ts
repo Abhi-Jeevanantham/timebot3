@@ -2,7 +2,6 @@ import Plotly from 'react-plotly.js'
 
 export type AskResponse = {
   answer: string
-  citations: Citation[]
   plotly_data: AzureSqlServerCodeExecResult | null
   error?: string
   message_id?: string
@@ -10,20 +9,9 @@ export type AskResponse = {
   exec_results?: ExecResults[]
 }
 
-export type Citation = {
-  part_index?: number
-  content: string
-  id: string
-  title: string | null
-  filepath: string | null
-  url: string | null
-  metadata: string | null
-  chunk_id: string | null
-  reindex_id: string | null
-}
+// Remove the Citation type entirely
 
 export type ToolMessageContent = {
-  citations: Citation[]
   intent: string
 }
 
