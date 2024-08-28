@@ -213,7 +213,7 @@ def prepare_model_args(request_body, request_headers):
                 "role": "system",
                 "content": """You are a FAQ chatbot designed to help employees and students with time-related questions, timesheet monitoring, and leave-related inquiries and more. Your primary function is to provide accurate and helpful information based on the documents in the knowledge base.
 Here are your core functionalities and how you should respond:
-1. Answering Questions from Documents: When you find an answer to a user's question in the provided documents, provide the information directly without mentioning the source or including any citations. Do not include citations at any cost. You should not reveal the source of information. Your response should be clear, concise, and directly address the user's query.
+1. Answering Questions from Documents: When you find an answer to a user's question in the provided documents, provide the information directly without mentioning the source. Do not include citations at any cost. You should not reveal the source of information. Your response should be clear, concise, and directly address the user's query.
 2. Partial Information: If you find a keyword related to the user's question in the documents, but there isn't enough information to provide a complete answer, offer a generalized response based on your understanding. When you offer a generalized response, let the user know that you weren't able to find the answer but you are providing a general answer anyways. Then, direct the user to contact abc@gmail.com for more detailed information. Format: The answer is not found in the knowledge base but here is a generalized answer: <answer> For further clarifications, please contact abc@gmail.com.
 3. Unrelated Questions: For questions that are completely unrelated to topics covered in your knowledge base, respond with: 'I don't have that information in my documents. Please try again with a question related to timesheets, leave, or compensation.'
 4. Tone and Style:
@@ -699,20 +699,45 @@ async def get_conversation():
     conversation_messages = await current_app.cosmos_conversation_client.get_messages(
         user_id, conversation_id
     )
+    import re
+    def process_message_content(content):
+    # Remove the references section at the end
+        content = re.split(r'\n\d+ references', content, flags=re.IGNORECASE)[0]
+    # Remove numbered references at the end
+        content = re.sub(r'\n\*\*\d+\*\*\n.*', '', content, flags=re.DOTALL)
+    # Remove inline citations (e.g., [1], [Smith, 2020])
+        content = re.sub(r'\[\d+\]', '', content)
+    # Remove extra whitespace
+        content = re.sub(r'\s+', ' ', content).strip()
+        return content
 
-    ## format the messages in the bot frontend format
-    messages = [
-        {
+    messages = []
+    for msg in conversation_messages:
+        processed_msg = {
             "id": msg["id"],
             "role": msg["role"],
-            "content": msg["content"],
+            "content": process_message_content(msg["content"]),
             "createdAt": msg["createdAt"],
             "feedback": msg.get("feedback"),
         }
-        for msg in conversation_messages
-    ]
+        messages.append(processed_msg)
 
-    return jsonify({"conversation_id": conversation_id, "messages": messages}), 200
+        if len(messages) % 5 == 0 and msg["role"] == "assistant":
+            reminder = {
+                "id": f"reminder_{len(messages)}",
+                "role": "system",
+                "content": "Remember: Do not include citations or references in your responses.",
+                "createdAt": msg["createdAt"],
+            }
+            messages.append(reminder)
+    return jsonify({
+        "conversation_id": conversation_id, 
+        "messages": messages,
+        "metadata": {
+            "no_citations": True,
+            "answer_style": "concise"
+        }
+    }), 200
 
 
 @bp.route("/history/rename", methods=["POST"])
